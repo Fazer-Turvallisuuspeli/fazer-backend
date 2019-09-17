@@ -1,0 +1,69 @@
+{
+  "name": "fazer-backend",
+  "version": "0.1.0",
+  "description": "Backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node ./src/index.js",
+    "watch": "cross-env NODE_ENV=development nodemon ./src/index.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --check src/**",
+    "format:fix": "prettier --write src/**"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fazer-Turvallisuuspeli/fazer-backend.git"
+  },
+  "keywords": [
+    "api",
+    "node",
+    "express"
+  ],
+  "author": "Fazer Turvallisuuspeli",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Fazer-Turvallisuuspeli/fazer-backend/issues"
+  },
+  "homepage": "https://github.com/Fazer-Turvallisuuspeli/fazer-backend#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "cross-env": "^5.2.1",
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.7.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-node": "^4.0.0",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "husky": "^3.0.5",
+    "lint-staged": "^9.2.5",
+    "nodemon": "^1.19.2",
+    "prettier": "^1.18.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.{htm,html,css,scss,less,graphql,json,md,yaml,yml}": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}

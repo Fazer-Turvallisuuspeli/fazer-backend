@@ -1,0 +1,10 @@
+node_modules
+
+LICENSE.md
+
+README.md
+
+.eslintignore
+.prettierignore
+.gitignore
+.gitkeep
