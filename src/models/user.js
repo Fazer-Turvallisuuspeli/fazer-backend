@@ -1,7 +1,17 @@
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
-  username: String,
+  _id: Number,
+  name: String,
+  email: String,
+  unit: {
+    _id: Number,
+    name: String,
+  },
+  score: {
+    overall: Number,
+    perCategory: [{ categoryId: Number, points: Number }],
+  },
 });
 
 userSchema.set('toJSON', {

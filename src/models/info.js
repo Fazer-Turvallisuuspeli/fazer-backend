@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
-const categorySchema = mongoose.Schema({
-  _id: Number,
-  name: String,
+const infoSchema = mongoose.Schema({
+  welcomeMessage: [{ title: String, body: String }],
+  units: [{ _id: Number, name: String }],
   instructions: [{ title: String, body: String }],
 });
 
-categorySchema.set('toJSON', {
+infoSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
@@ -17,6 +17,6 @@ categorySchema.set('toJSON', {
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 
-const Category = mongoose.model('Category', categorySchema);
+const Info = mongoose.model('Info', infoSchema);
 
-module.exports = Category;
+module.exports = Info;
