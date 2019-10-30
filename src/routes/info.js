@@ -7,10 +7,24 @@ router.get('/', async (request, response) => {
   response.json(info);
 });
 
+router.get('/welcomeMessage', async (request, response) => {
+  const info = await Info.find({}, 'welcomeMessage');
+  response.json(info);
+});
+
+router.get('/units', async (request, response) => {
+  const info = await Info.find({}, 'units');
+  response.json(info);
+});
+
+router.get('/instructions', async (request, response) => {
+  const info = await Info.find({}, 'instructions');
+  response.json(info);
+});
+
 // post new information
 router.post('/', async (req, res) => {
   const newInfo = new Info({
-    // create object for saved in db
     welcomeMessage: req.body.welcomeMessage,
     units: req.body.units,
     instructions: req.body.instructions,
@@ -24,17 +38,11 @@ router.post('/', async (req, res) => {
 });
 
 // update info
-//* *HUOM. updates all fields
-//* *should maeby check for empty fields?
-router.patch('/', async (request, response, next) => {
+router.put('/', async (request, response, next) => {
+  const info = request.body;
+
   try {
-    const updatedInfo = await Info.updateOne({
-      $set: {
-        welcomeMessage: request.body.welcomeMessage,
-        units: request.body.units,
-        instructions: request.body.instructions,
-      },
-    });
+    const updatedInfo = await Info.findOneAndUpdate({}, info, { new: true });
     response.json(updatedInfo);
   } catch (error) {
     next(error);

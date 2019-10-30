@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 
 const questionSchema = mongoose.Schema({
-  _id: Number,
-  categoryId: Number,
+  categoryId: String,
   question: String,
   explanation: String,
   isSingleChoice: Boolean,

@@ -1,32 +1,54 @@
 const router = require('express').Router();
 const Category = require('../models/category');
+const Questions = require('../models/question');
 
 // get all
 router.get('/', async (request, response) => {
   const categories = await Category.find({});
 
-  response.json(categories.map(category => category.toJSON()));
+  response.json(categories);
 });
 
 // get specific
 router.get('/:categoryId', async (request, response, next) => {
   const { categoryId } = request.params;
-  const categoryIdNum = parseInt(categoryId, 10);
 
   try {
-    const selectedCategory = await Category.findById(categoryIdNum);
+    const selectedCategory = await Category.findById(categoryId);
     response.json(selectedCategory);
   } catch (error) {
     next(error);
   }
 });
 
-// insert many?
+// get questions
+router.get('/:categoryId/questions', async (request, response, next) => {
+  const { categoryId } = request.params;
+  try {
+    const questions = await Questions.find({ categoryId });
+    response.json(questions);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// get specific question
+router.get(
+  '/:categoryId/questions/:questionId',
+  async (request, response, next) => {
+    const { questionId } = request.params;
+    try {
+      const questions = await Questions.findById(questionId);
+      response.json(questions);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 // add new category
 router.post('/', async (request, response, next) => {
   const newCategory = new Category({
-    _id: request.body._id,
     name: request.body.name,
     instructions: request.body.instructions,
   });
@@ -39,21 +61,15 @@ router.post('/', async (request, response, next) => {
 });
 
 // update
-//* *HUOM. updates all fields
-//* *should maeby check for empty fields?
-router.patch('/:categoryId', async (request, response, next) => {
+router.put('/:categoryId', async (request, response, next) => {
   const { categoryId } = request.params;
-  const categoryIdNum = parseInt(categoryId, 10);
+  const category = request.body;
 
   try {
-    const updatedCategory = await Category.updateOne(
-      { _id: categoryIdNum },
-      {
-        $set: {
-          name: request.body.name,
-          instructions: request.body.instructions,
-        },
-      }
+    const updatedCategory = await Category.findByIdAndUpdate(
+      categoryId,
+      category,
+      { new: true }
     );
     response.json(updatedCategory);
   } catch (error) {
@@ -64,10 +80,9 @@ router.patch('/:categoryId', async (request, response, next) => {
 // delete specific category
 router.delete('/:categoryId', async (request, response, next) => {
   const { categoryId } = request.params;
-  const categoryIdNum = parseInt(categoryId, 10);
 
   try {
-    const removedCategory = await Category.remove({ _id: categoryIdNum });
+    const removedCategory = await Category.remove({ _id: categoryId });
     response.json(removedCategory);
   } catch (error) {
     next(error);

@@ -1,16 +1,15 @@
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
-  _id: Number,
   name: String,
   email: String,
   unit: {
-    _id: Number,
+    id: String,
     name: String,
   },
   score: {
     overall: Number,
-    perCategory: [{ categoryId: Number, points: Number }],
+    perCategory: [{ categoryId: String, points: Number }],
   },
 });
 
