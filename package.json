@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node ./src/index.js",
-    "watch": "cross-env NODE_ENV=development nodemon ./src/index.js",
+    "watch": "cross-env NODE_ENV=test nodemon ./src/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --check src/**",
@@ -33,6 +33,7 @@
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "mongoose": "^5.7.1",
+    "tunnel-ssh": "^4.1.4",
     "uuid": "^3.3.3"
   },
   "devDependencies": {
