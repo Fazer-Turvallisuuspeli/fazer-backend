@@ -1,4 +1,6 @@
 const router = require('express').Router();
+const bcrypt = require('bcrypt');
+// const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 // get all
@@ -33,12 +35,18 @@ router.get('/unit/:unitId', async (request, response, next) => {
 
 // add new user
 router.post('/', async (request, response, next) => {
+  const userPassword = request.body.password;
+  const salt = 4;
+  const newPasswordHash = await bcrypt.hash(userPassword, salt);
+
   const newUser = new User({
     name: request.body.name,
+    passwordHash: newPasswordHash,
     email: request.body.email,
     unit: request.body.unit,
     score: request.body.score,
   });
+
   try {
     const savedNewUser = await newUser.save();
     response.json(savedNewUser);
