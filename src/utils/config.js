@@ -3,8 +3,9 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
-let { PORT } = process.env;
-let { MONGODB_URI } = process.env;
+let { PORT, MONGODB_URI } = process.env;
+
+const { TUNNEL_USERNAME, TUNNEL_PASSWORD, TUNNEL_HOST } = process.env;
 
 if (process.env.NODE_ENV === 'test') {
   PORT = process.env.TEST_PORT;
@@ -14,4 +15,7 @@ if (process.env.NODE_ENV === 'test') {
 module.exports = {
   MONGODB_URI,
   PORT,
+  TUNNEL_USERNAME,
+  TUNNEL_PASSWORD,
+  TUNNEL_HOST,
 };

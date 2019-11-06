@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const tunnel = require('tunnel-ssh');
 
 const routes = require('./routes');
 
@@ -20,17 +21,31 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Database
 console.log('Connecting to', config.MONGODB_URI);
 
-mongoose
-  .connect(config.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log('Connected to MongoDB');
-  })
-  .catch(error => {
-    console.log('Error connection to MongoDB:', error.message);
-  });
+const tunnelConfig = {
+  username: config.TUNNEL_USERNAME,
+  password: config.TUNNEL_PASSWORD,
+  host: config.TUNNEL_HOST,
+  port: 22,
+  dstPort: 27017,
+};
+
+tunnel(tunnelConfig, sshError => {
+  if (sshError) {
+    console.log('SSH Connection Error:', sshError.message);
+  }
+
+  mongoose
+    .connect(config.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    .then(() => {
+      console.log('Connected to MongoDB');
+    })
+    .catch(error => {
+      console.log('Error connection to MongoDB:', error.message);
+    });
+});
 
 app.use(tokenExtractor);
 
