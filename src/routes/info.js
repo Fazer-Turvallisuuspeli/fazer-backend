@@ -8,18 +8,18 @@ router.get('/', async (request, response) => {
 });
 
 router.get('/welcomeMessage', async (request, response) => {
-  const info = await Info.find({}, 'welcomeMessage');
-  response.json(info);
+  const welcomeMessage = await Info.find({}, 'welcomeMessage');
+  response.json(welcomeMessage[0].welcomeMessage);
 });
 
 router.get('/units', async (request, response) => {
-  const info = await Info.find({}, 'units');
-  response.json(info);
+  const units = await Info.find({}, 'units');
+  response.json(units[0].units);
 });
 
 router.get('/instructions', async (request, response) => {
-  const info = await Info.find({}, 'instructions');
-  response.json(info);
+  const instructions = await Info.find({}, 'instructions');
+  response.json(instructions[0].instructions);
 });
 
 // post new information

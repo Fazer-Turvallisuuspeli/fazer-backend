@@ -5,8 +5,7 @@ const Questions = require('../models/question');
 // get all
 router.get('/', async (request, response) => {
   const categories = await Category.find({});
-
-  response.json(categories);
+  response.json(categories.map(category => category.toJSON()));
 });
 
 // get specific
