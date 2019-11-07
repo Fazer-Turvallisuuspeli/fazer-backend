@@ -1,3 +1,4 @@
+const uuid = require('uuid/v4');
 const router = require('express').Router();
 const Question = require('../models/question');
 const Category = require('../models/category');
@@ -6,8 +7,7 @@ const Category = require('../models/category');
 // /questions
 router.get('/', async (request, response) => {
   const questions = await Question.find({});
-
-  response.json(questions);
+  response.json(questions.map(question => question.toJSON()));
 });
 
 // get specific question
@@ -24,12 +24,21 @@ router.get('/:questionId', async (request, response, next) => {
 
 // add new
 router.post('/', async (request, response, next) => {
+  const correctChoice = request.body.choices;
+  correctChoice.forEach(choices => {
+    choices.id = uuid();
+  });
+  const choicesArray = correctChoice.map(choice =>
+    choice.isCorrect ? choice.id : null
+  );
+  const correctChoiceId = choicesArray.filter(Boolean);
+
   const newQuestion = new Question({
     categoryId: request.body.categoryId,
     question: request.body.question,
     explanation: request.body.explanation,
     isSingleChoice: request.body.isSingleChoice,
-    correctChoiceId: request.body.correctChoiceId,
+    correctChoiceId,
     choices: request.body.choices,
   });
   const relatedCategory = Category.findById(request.body.categoryId);
@@ -46,7 +55,6 @@ router.post('/', async (request, response, next) => {
 router.put('/:questionId', async (request, response, next) => {
   const { questionId } = request.params;
   const question = request.body;
-
   try {
     const updatedQuestion = await Question.findByIdAndUpdate(
       questionId,

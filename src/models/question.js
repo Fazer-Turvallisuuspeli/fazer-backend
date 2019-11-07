@@ -6,7 +6,13 @@ const questionSchema = mongoose.Schema({
   explanation: String,
   isSingleChoice: Boolean,
   correctChoiceId: Array,
-  choices: [{ _id: Number, option: String }],
+  choices: [
+    {
+      id: String,
+      option: String,
+      isCorrect: Boolean,
+    },
+  ],
 });
 
 questionSchema.set('toJSON', {
