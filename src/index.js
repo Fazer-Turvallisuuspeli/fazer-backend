@@ -55,6 +55,7 @@ app.use('/api/v1/game/users', routes.user);
 app.use('/api/v1/game/categories', routes.category);
 app.use('/api/v1/game/questions', routes.question);
 app.use('/api/v1/game/login', routes.login);
+app.use('/api/v1/game/admin', routes.admin);
 
 // Application-level middleware for unrecognized routes
 app.use(errorHandler);

@@ -3,6 +3,7 @@ const category = require('./category');
 const info = require('./info');
 const question = require('./question');
 const login = require('./login');
+const admin = require('./admin');
 
 module.exports = {
   user,
@@ -10,4 +11,5 @@ module.exports = {
   info,
   question,
   login,
+  admin,
 };

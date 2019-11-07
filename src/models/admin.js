@@ -1,19 +1,16 @@
 const mongoose = require('mongoose');
 
-const userSchema = mongoose.Schema({
+const adminSchema = mongoose.Schema({
   name: String,
   email: String,
+  passwordHash: String,
   unit: {
     id: String,
     name: String,
   },
-  score: {
-    overall: Number,
-    perCategory: [{ categoryId: String, points: Number }],
-  },
 });
 
-userSchema.set('toJSON', {
+adminSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
@@ -24,6 +21,6 @@ userSchema.set('toJSON', {
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 
-const User = mongoose.model('User', userSchema);
+const Admin = mongoose.model('Admin', adminSchema);
 
-module.exports = User;
+module.exports = Admin;
