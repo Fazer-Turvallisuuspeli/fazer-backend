@@ -1,28 +1,46 @@
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const Admin = require('../models/admin');
 
-// get all
-router.get('/', async (request, response) => {
-  const admin = await Admin.find({});
-  response.json(admin);
-});
-
-// get specific user
-/*
-router.get('/:userId', async (request, response, next) => {
-  const { userId } = request.params;
-
+// get all   USE TOKEN
+router.get('/', async (request, response, next) => {
   try {
-    const selectedUser = await User.findById(userId);
-    response.json(selectedUser);
+    if (!request.token) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const admin = await Admin.find({});
+    return response.json(admin);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
-*/
-// add new admin user
+
+// get specific user   USE TOKEN
+router.get('/:userId', async (request, response, next) => {
+  const { userId } = request.params;
+  try {
+    if (!request.token) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const selectedUser = await Admin.findById(userId);
+    return response.json(selectedUser);
+  } catch (error) {
+    return next(error);
+  }
+});
+
+// add new admin user  USE TOKEN
 router.post('/', async (request, response, next) => {
   const userPassword = request.body.password;
   const salt = 4;
@@ -36,36 +54,86 @@ router.post('/', async (request, response, next) => {
   });
 
   try {
+    if (!request.token) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
     const savedNewUser = await newUser.save();
-    response.json(savedNewUser);
+    return response.json(savedNewUser);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
-/*
+
+// update admin user data  USE TOKEN
 router.put('/:userId', async (request, response, next) => {
   const { userId } = request.params;
   const user = request.body;
 
   try {
-    const updatedUser = await User.findByIdAndUpdate(userId, user, {
+    if (!request.token) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const updatedUser = await Admin.findByIdAndUpdate(userId, user, {
       new: true,
     });
-    response.json(updatedUser);
+    return response.json(updatedUser);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
-*/
-// delete specific user
+
+// update admin user password data  USE TOKEN
+router.put('/:userId/change-password', async (request, response, next) => {
+  const { userId } = request.params;
+  const { password } = request.body;
+  const salt = 4;
+  const passwordHash = await bcrypt.hash(password, salt);
+  const user = { passwordHash };
+  try {
+    if (!request.token) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const updatedUser = await Admin.findByIdAndUpdate(userId, user, {
+      new: true,
+    });
+    return response.json(updatedUser);
+  } catch (error) {
+    return next(error);
+  }
+});
+
+// delete specific user  USE TOKEN
 router.delete('/:userId', async (request, response, next) => {
   const { userId } = request.params;
-
   try {
-    const removedUser = await Admin.remove({ _id: userId });
-    response.json(removedUser);
+    if (!request.token) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+
+    const removedUser = await Admin.deleteOne({ _id: userId });
+    return response.json(removedUser);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
 

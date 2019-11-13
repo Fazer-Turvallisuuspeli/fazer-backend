@@ -1,10 +1,11 @@
 const router = require('express').Router();
+const jwt = require('jsonwebtoken');
 const Info = require('../models/info');
 
 // get all
 router.get('/', async (request, response) => {
-  const info = await Info.find({});
-  response.json(info);
+  const infos = await Info.find({});
+  response.json(infos.map(info => info.toJSON()));
 });
 
 router.get('/welcomeMessage', async (request, response) => {
@@ -22,40 +23,66 @@ router.get('/instructions', async (request, response) => {
   response.json(instructions[0].instructions);
 });
 
-// post new information
-router.post('/', async (req, res) => {
+// post new information USE TOKEN
+router.post('/', async (request, response) => {
   const newInfo = new Info({
-    welcomeMessage: req.body.welcomeMessage,
-    units: req.body.units,
-    instructions: req.body.instructions,
+    welcomeMessage: request.body.welcomeMessage,
+    units: request.body.units,
+    instructions: request.body.instructions,
   });
   try {
+    if (!request.token) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
     const savedNewInfo = await newInfo.save(); // save in mongodb
-    res.json(savedNewInfo); // response with saved post
+    return response.json(savedNewInfo); // response with saved post
   } catch (err) {
-    res.json({ message: err });
+    return response.json({ message: err });
   }
 });
 
-// update info
-router.put('/', async (request, response, next) => {
+// update info USE TOKEN
+router.put('/:id', async (request, response, next) => {
+  const { id } = request.params;
   const info = request.body;
 
   try {
-    const updatedInfo = await Info.findOneAndUpdate({}, info, { new: true });
-    response.json(updatedInfo);
+    if (!request.token) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const updatedInfo = await Info.findOneAndUpdate(id, info, { new: true });
+    return response.json(updatedInfo);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
 
-// delete info
-router.delete('/', async (request, response, next) => {
+// delete info USE TOKEN
+router.delete('/:id', async (request, response, next) => {
+  const { id } = request.params;
   try {
-    const removedInfo = await Info.remove();
-    response.json(removedInfo);
+    if (!request.token) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const removedInfo = await Info.deleteOne({ _id: id });
+    return response.json(removedInfo);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
 

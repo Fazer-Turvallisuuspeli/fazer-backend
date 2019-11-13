@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const jwt = require('jsonwebtoken');
 const Category = require('../models/category');
 const Questions = require('../models/question');
 
@@ -52,39 +53,63 @@ router.post('/', async (request, response, next) => {
     instructions: request.body.instructions,
   });
   try {
+    if (!request.token) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
     const savedNewCategory = await newCategory.save();
-    response.json(savedNewCategory);
+    return response.json(savedNewCategory);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
 
-// update
+// update USE TOKEN
 router.put('/:categoryId', async (request, response, next) => {
   const { categoryId } = request.params;
   const category = request.body;
 
   try {
+    if (!request.token) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
     const updatedCategory = await Category.findByIdAndUpdate(
       categoryId,
       category,
       { new: true }
     );
-    response.json(updatedCategory);
+    return response.json(updatedCategory);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
 
-// delete specific category
+// delete specific category  USE TOKEN
 router.delete('/:categoryId', async (request, response, next) => {
   const { categoryId } = request.params;
 
   try {
-    const removedCategory = await Category.remove({ _id: categoryId });
-    response.json(removedCategory);
+    if (!request.token) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'Token missing or invalid' });
+    }
+    const removedCategory = await Category.deleteOne({ _id: categoryId });
+    return response.json(removedCategory);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
 
