@@ -62,7 +62,7 @@ router.put('/:userId', async (request, response, next) => {
   }
 });
 
-// delete specific user USE TOKEN
+// delete specific user, token needed
 router.delete('/:userId', async (request, response, next) => {
   const { userId } = request.params;
 

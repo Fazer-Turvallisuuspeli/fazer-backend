@@ -21,12 +21,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Database
 console.log('Connecting to', config.MONGODB_URI);
 
+// in development use tunnel-ssh to connect mongodb in school server
 const tunnelConfig = {
   username: config.TUNNEL_USERNAME,
   password: config.TUNNEL_PASSWORD,
   host: config.TUNNEL_HOST,
   port: 22,
-  dstPort: 27017,
+  dstPort: 27017, // mongodb default port
 };
 
 tunnel(tunnelConfig, sshError => {

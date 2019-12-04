@@ -2,7 +2,7 @@ const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const Info = require('../models/info');
 
-// get all
+// get all infos
 router.get('/', async (request, response) => {
   const infos = await Info.find({});
   response.json(infos.map(info => info.toJSON()));
@@ -23,7 +23,7 @@ router.get('/instructions', async (request, response) => {
   response.json(instructions[0].instructions);
 });
 
-// post new information USE TOKEN
+// post new info, token needed
 router.post('/', async (request, response) => {
   const newInfo = new Info({
     welcomeMessage: request.body.welcomeMessage,
@@ -46,7 +46,7 @@ router.post('/', async (request, response) => {
   }
 });
 
-// update info USE TOKEN
+// update info, token needed
 router.put('/:id', async (request, response, next) => {
   const { id } = request.params;
   const info = request.body;
@@ -67,7 +67,7 @@ router.put('/:id', async (request, response, next) => {
   }
 });
 
-// delete info USE TOKEN
+// delete info, token needed
 router.delete('/:id', async (request, response, next) => {
   const { id } = request.params;
   try {

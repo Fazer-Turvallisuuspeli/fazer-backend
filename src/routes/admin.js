@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Admin = require('../models/admin');
 
-// get all   USE TOKEN
+// get all admin users, token needed
 router.get('/', async (request, response, next) => {
   try {
     if (!request.token) {
@@ -21,7 +21,7 @@ router.get('/', async (request, response, next) => {
   }
 });
 
-// get specific user   USE TOKEN
+// get specific admin user with id, token needed
 router.get('/:userId', async (request, response, next) => {
   const { userId } = request.params;
   try {
@@ -40,12 +40,12 @@ router.get('/:userId', async (request, response, next) => {
   }
 });
 
-// add new admin user  USE TOKEN
+// add new admin user, token needed (only admins can add new admins)
 router.post('/', async (request, response, next) => {
   const userPassword = request.body.password;
   const salt = 4;
-  const newPasswordHash = await bcrypt.hash(userPassword, salt);
-
+  const newPasswordHash = await bcrypt.hash(userPassword, salt); // create new passwordhash, that's stored in db
+  // create admin user that is stored in db
   const newUser = new Admin({
     name: request.body.name,
     passwordHash: newPasswordHash,
@@ -62,6 +62,7 @@ router.post('/', async (request, response, next) => {
     if (!decodedToken.id) {
       return response.status(401).json({ error: 'Token missing or invalid' });
     }
+    // put new user in database
     const savedNewUser = await newUser.save();
     return response.json(savedNewUser);
   } catch (error) {
@@ -69,7 +70,7 @@ router.post('/', async (request, response, next) => {
   }
 });
 
-// update admin user data  USE TOKEN
+// update specific admin user, token needed
 router.put('/:userId', async (request, response, next) => {
   const { userId } = request.params;
   const user = request.body;
@@ -83,6 +84,7 @@ router.put('/:userId', async (request, response, next) => {
     if (!decodedToken.id) {
       return response.status(401).json({ error: 'Token missing or invalid' });
     }
+    // find the user by id and updates
     const updatedUser = await Admin.findByIdAndUpdate(userId, user, {
       new: true,
     });
@@ -91,8 +93,8 @@ router.put('/:userId', async (request, response, next) => {
     return next(error);
   }
 });
-
-// update admin user password data  USE TOKEN
+// could use js spread..
+// update admin user password, token needed
 router.put('/:userId/change-password', async (request, response, next) => {
   const { userId } = request.params;
   const { password } = request.body;
@@ -117,7 +119,7 @@ router.put('/:userId/change-password', async (request, response, next) => {
   }
 });
 
-// delete specific user  USE TOKEN
+// delete specific user, token needed
 router.delete('/:userId', async (request, response, next) => {
   const { userId } = request.params;
   try {

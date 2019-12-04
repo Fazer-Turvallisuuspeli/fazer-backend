@@ -1,0 +1,742 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Fazer API
+  description: 'An Api for Fazer work safety game'
+  termsOfService: https://smartbear.com/terms-of-service
+  contact:
+    name: Lahti University of Applied Sciences
+  license:
+    name: Creative commons
+    url: http://www.lamk.fi/licenses
+
+servers:
+  - url: https://fazer2.lamk.fi
+tags:
+  - name: Info
+    description: General information and instructions of Fazer work safety game
+  - name: Users
+    description: Fazer work safety game users
+  - name: Admin
+    description: Fazer work safety game admin users
+  - name: Categories
+    description: Fazer work safety game categories
+  - name: Questions
+    description: Fazer work safety game questions
+
+paths:
+  /api/v1/game/info:
+    get:
+      tags:
+        - Info
+      description: Get all items from info
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Infos'
+    post:
+      tags:
+        - Info
+      security:
+        - bearerAuth: []
+      description: Post new info
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/Info'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/v1/game/info/{id}:
+    put:
+      tags:
+        - Info
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String id of info object to update
+      description: Update info
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/Info'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Info'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      tags:
+        - Info
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String id of info object to be deleted
+      description: Delete info
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/v1/game/info/welcomeMessage:
+    get:
+      tags:
+        - Info
+      description: Get all the welcomMessage items in info
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WelcomeMessage'
+  /api/v1/game/info/units:
+    get:
+      tags:
+        - Info
+      description: Get all the unit items in info
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Units'
+  /api/v1/game/info/instructions:
+    get:
+      tags:
+        - Info
+      description: Get all the instructions items in info
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instructions'
+  /api/v1/game/users:
+    get:
+      tags:
+        - Users
+      description: Get all users of fazer work safety games
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+    post:
+      tags:
+        - Users
+      description: Post new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+  /api/v1/game/users/{id}:
+    get:
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String id of user to be updated
+      description: Get specific user
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String id of user
+      description: Update user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String id of user to be deleted
+      description: Delete one user
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/v1/game/users/unit/{id}:
+    get:
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String id of unit
+      description: Get all users in specific unit
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+  /api/v1/game/admin:
+    get:
+      tags:
+        - Admin
+      security:
+        - bearerAuth: []
+      description: Get all admin users
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admins'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags:
+        - Admin
+      security:
+        - bearerAuth: []
+      description: Post new admin user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/AdminPost'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/v1/game/admin/{id}:
+    get:
+      tags:
+        - Admin
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String id of admin user
+      security:
+        - bearerAuth: []
+      description: Get all admin users
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    put:
+      tags:
+        - Admin
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String id of admin user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/AdminPost'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      tags:
+        - Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String id of admin to be deleted
+      description: Delete one admin user
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/v1/game/categories:
+    get:
+      tags:
+        - Categories
+      description: Get all categories
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categories'
+    post:
+      tags:
+        - Categories
+      security:
+        - bearerAuth: []
+      description: Post new category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/Category'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/v1/game/categories/{id}:
+    get:
+      tags:
+        - Categories
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String category id
+      description: Get specific category
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+    put:
+      tags:
+        - Categories
+      description: Update one category
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String category id
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/Category'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      tags:
+        - Categories
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String category id
+      description: Delete one category
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/v1/game/categories/{id}/questions:
+    get:
+      description: Get all questions in specific category
+      tags:
+        - Categories
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String category id
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Questions'
+  /api/v1/game/categories/{id}/questions/{question_id}:
+    get:
+      description: Get specific question on category
+      tags:
+        - Categories
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String id of categoryId
+        - in: path
+          name: question_id
+          schema:
+            type: string
+          required: true
+          description: String id of question
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Info:
+      description: Model containing Info
+      type: object
+      properties:
+        id:
+          type: string
+          example: '5dc2bfb288f4b411f851aa7e'
+        welcomeMessage:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                example: '5dcc0634fc004f3360c7824f'
+              title:
+                type: string
+                example: 'Tervetuloa töihin Fazerille!'
+              body:
+                type: string
+                example: 'Työ- ja elintarviketurvallisuus ovat toimintamme perusta, joista emme tingi missään vaiheessa.'
+        units:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                example: 'fb60d487-8696-4bfe-8623-2a78304d8437'
+              name:
+                type: string
+                example: 'Lahti'
+        instructions:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                example: '5dc2bfb288f4b411f851aa80'
+              title:
+                type: string
+                example: 'Ohjeet'
+              body:
+                type: string
+                example: 'Pelaa kaikki kategoriat.'
+    Infos:
+      type: array
+      description: Array of all info items
+      items:
+        type: object
+        $ref: '#/components/schemas/Info'
+    WelcomeMessage:
+      type: array
+      description: Model containing welcomeMessages
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+            example: '5dcc0634fc004f3360c7824f'
+          title:
+            type: string
+            example: 'Tervetuloa töihin Fazerille!'
+          body:
+            type: string
+            example: 'Työ- ja elintarviketurvallisuus ovat toimintamme perusta, joista emme tingi missään vaiheessa.'
+    Units:
+      type: array
+      description: Model containing units
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+            example: 'fb60d487-8696-4bfe-8623-2a78304d8437'
+          name:
+            type: string
+            example: 'Lahti'
+    Instructions:
+      type: array
+      description: Model containing instructions
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+            example: '5dc2bfb288f4b411f851aa80'
+          title:
+            type: string
+            example: 'Ohjeet'
+          body:
+            type: string
+            example: 'Pelaa kaikki kategoriat.'
+    User:
+      description: Users of Fazer work safety game
+      type: object
+      properties:
+        id:
+          type: string
+          example: 5dc3e4c51940c732945100cd
+        name:
+          type: string
+          example: 'John Doe'
+        email:
+          type: string
+          example: 'johndoe@test.dev'
+        unit:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 'fb60d487-8696-4bfe-8623-2a78304d8437'
+            name:
+              type: string
+              example: 'Lahti'
+        score:
+          type: object
+          properties:
+            overall:
+              type: integer
+              example: 100
+            perCategory:
+              type: array
+              items:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: '5dc3e4c51940c732945100ce'
+                  categoryId:
+                    type: string
+                    example: '01ed880f-9477-4453-a0fd-80803f5709a2'
+                  points:
+                    type: integer
+                    example: 4
+    Users:
+      description: Array of users
+      type: array
+      items:
+        type: object
+        $ref: '#/components/schemas/User'
+    Admin:
+      description: Admin users of Fazer safety game
+      type: object
+      properties:
+        id:
+          type: string
+          example: '5dcbe65825825d3830854216'
+        name:
+          type: string
+          example: 'Testinen'
+        passwordHash:
+          type: string
+          example: '$2b$04$qCv/O09/BW76iIvsQ8JU7.gGSj1HlpBD56UxosOTYs9H6s3H.SI0u'
+        email:
+          type: string
+          example: 'useri@test.dev'
+        unit:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 'b0b9c978-6d91-45f6-b368-2524c656a8aa'
+            name:
+              type: string
+              example: 'Lahti'
+    AdminPost:
+      description: Admin users of Fazer safety game
+      type: object
+      properties:
+        id:
+          type: string
+          example: '5dcbe65825825d3830854216'
+        name:
+          type: string
+          example: 'Testinen'
+        password:
+          type: string
+        email:
+          type: string
+          example: 'useri@test.dev'
+        unit:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 'b0b9c978-6d91-45f6-b368-2524c656a8aa'
+            name:
+              type: string
+              example: 'Lahti'
+    Admins:
+      description: Array of admin users
+      type: array
+      items:
+        type: object
+        $ref: '#/components/schemas/Admin'
+    Category:
+      description: Category
+      type: object
+      properties:
+        id:
+          type: string
+          example: 'cffc7f45-9df7-45c5-a509-473e4b979044'
+        name:
+          type: string
+          example: 'Ennakoiva turvallisuus'
+        instructions:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                example: '5dbae2a02c923a1cc49048c3'
+              title:
+                type: string
+                example: 'Riskien ja vaarojen arviointi sekä turvallisen työn aloitus'
+              body:
+                type: string
+                example: 'Turvallisuuslaki vaatii työnantajaa arvioimaan työpaikan ja työolosuhteiden riskien merkitystä työntekijöiden turvallisuudelle ja terveydelle.'
+    Categories:
+      description: Array of category items
+      type: array
+      items:
+        type: object
+        $ref: '#/components/schemas/Category'
+
+  responses:
+    UnauthorizedError:
+      description: 'Token missing or invalid'
+    Forbidden:
+      description: 'Invalid username or password'
+    Success:
+      description: 'OK'
+
+security:
+  - bearerAuth: []

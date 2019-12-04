@@ -3,13 +3,13 @@ const jwt = require('jsonwebtoken');
 const Category = require('../models/category');
 const Questions = require('../models/question');
 
-// get all
+// get all categories
 router.get('/', async (request, response) => {
   const categories = await Category.find({});
   response.json(categories.map(category => category.toJSON()));
 });
 
-// get specific
+// get specific catgegory
 router.get('/:categoryId', async (request, response, next) => {
   const { categoryId } = request.params;
 
@@ -21,7 +21,7 @@ router.get('/:categoryId', async (request, response, next) => {
   }
 });
 
-// get questions
+// get questions in one category, category id needed
 router.get('/:categoryId/questions', async (request, response, next) => {
   const { categoryId } = request.params;
   try {
@@ -32,7 +32,7 @@ router.get('/:categoryId/questions', async (request, response, next) => {
   }
 });
 
-// get specific question
+// get specific question in specific category, category id and question id needed
 router.get(
   '/:categoryId/questions/:questionId',
   async (request, response, next) => {
@@ -68,7 +68,7 @@ router.post('/', async (request, response, next) => {
   }
 });
 
-// update USE TOKEN
+// update one category, token needed
 router.put('/:categoryId', async (request, response, next) => {
   const { categoryId } = request.params;
   const category = request.body;
@@ -93,7 +93,7 @@ router.put('/:categoryId', async (request, response, next) => {
   }
 });
 
-// delete specific category  USE TOKEN
+// delete specific category, token needed
 router.delete('/:categoryId', async (request, response, next) => {
   const { categoryId } = request.params;
 

@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const router = require('express').Router();
 const Admin = require('../models/admin');
 
-// user login
+// user login, only for admin users
 router.post('/', async (request, response) => {
   const userBody = request.body;
 
@@ -14,7 +14,7 @@ router.post('/', async (request, response) => {
       : await bcrypt.compare(userBody.password, user.passwordHash);
 
   if (!(user && passwordCorrect)) {
-    return response.status(401).json({ error: 'Invalid input' });
+    return response.status(403).json({ error: 'Invalid username or password' });
   }
 
   const userForToken = {
