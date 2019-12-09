@@ -494,6 +494,102 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Question'
+  /api/v1/game/questions:
+    get:
+      tags:
+        - Questions
+      description: Get all questions
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Questions'
+    post:
+      tags:
+        - Questions
+      security:
+        - bearerAuth: []
+      description: Post new question
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/Question'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/v1/game/questions/{id}:
+    get:
+      tags:
+        - Questions
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String question id
+      description: Get specific question
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+    put:
+      tags:
+        - Questions
+      description: Update one question
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String question id
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/Question'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      tags:
+        - Questions
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String question id
+      description: Delete one question
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 
 components:
   securitySchemes:
@@ -729,6 +825,39 @@ components:
       items:
         type: object
         $ref: '#/components/schemas/Category'
+    Question:
+      description: Questions
+      type: object
+      properties:
+        categoryId:
+          type: string
+          example: 'cffc7f45-9df7-45c5-a509-473e4b979044'
+        question:
+          type: string
+          example: 'Työntekijällä on oikeus ja mahdollisuus'
+        explanation:
+          type: string
+          example: 'Oikea vastaus (a, b ja c): Työntekijällä on oikeus saada tarvittava perehdytys työn tekemiseksi turvallisesti..'
+        isSingleChoice:
+          type: boolean
+          example: false
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              option:
+                type: string
+                example: 'Saada palautetta tekemistään turvallisuuteen liittyvistä parannusehdotuksista'
+              isCorrect:
+                type: boolean
+                example: true
+    Questions:
+      description: Array of questions
+      type: array
+      items:
+        type: object
+        $ref: '#/components/schemas/Question'
 
   responses:
     UnauthorizedError:
