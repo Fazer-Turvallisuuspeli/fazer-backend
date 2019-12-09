@@ -30,22 +30,34 @@ const tunnelConfig = {
   dstPort: 27017, // mongodb default port
 };
 
-tunnel(tunnelConfig, sshError => {
-  if (sshError) {
-    console.log('SSH Connection Error:', sshError.message);
+tunnel(tunnelConfig, async (error, server) => {
+  // Initial tunnel connection error
+  if (error) {
+    console.error('Tunnel Connection Error:', error.message);
   }
 
-  mongoose
-    .connect(config.MONGODB_URI, {
+  // Tunnel connection error
+  server.on('error', err => {
+    console.error('Tunnel Error:', err.message);
+  });
+
+  // Connect to MongoDB
+  try {
+    await mongoose.connect(config.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-    })
-    .then(() => {
-      console.log('Connected to MongoDB');
-    })
-    .catch(error => {
-      console.log('Error connection to MongoDB:', error.message);
     });
+
+    console.log('Connected to MongoDB');
+    // Initial MongoDB connection error
+  } catch (err) {
+    console.error('Error connection to MongoDB:', err.message);
+  }
+});
+
+// MongoDB connection error
+mongoose.connection.on('error', err => {
+  console.error('Mongoose Error:', err.message);
 });
 
 app.use(tokenExtractor);
