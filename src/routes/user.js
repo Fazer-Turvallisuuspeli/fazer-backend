@@ -74,7 +74,7 @@ router.delete('/:userId', async (request, response, next) => {
 
     if (!decodedToken.id) {
       return response.status(401).json({ error: 'Token missing or invalid' });
-    }
+    } // change to delete one, remove is deprecated
     const removedUser = await User.remove({ _id: userId });
     return response.json(removedUser);
   } catch (error) {

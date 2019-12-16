@@ -27,7 +27,6 @@ router.post('/', async (request, response) => {
     token,
     name: user.name,
     unit: user.unit,
-    score: user.score,
     id: user.id,
   });
 });

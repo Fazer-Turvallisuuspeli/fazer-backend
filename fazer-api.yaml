@@ -6,9 +6,6 @@ info:
   termsOfService: https://smartbear.com/terms-of-service
   contact:
     name: Lahti University of Applied Sciences
-  license:
-    name: Creative commons
-    url: http://www.lamk.fi/licenses
 
 servers:
   - url: https://fazer2.lamk.fi
@@ -23,13 +20,15 @@ tags:
     description: Fazer work safety game categories
   - name: Questions
     description: Fazer work safety game questions
+  - name: Login
+    description: Login for admin users
 
 paths:
   /api/v1/game/info:
     get:
       tags:
         - Info
-      description: Get all items from info
+      description: Get all items from infos collection
       responses:
         '200':
           description: OK
@@ -42,7 +41,7 @@ paths:
         - Info
       security:
         - bearerAuth: []
-      description: Post new info
+      description: Post new info, requires bearer token send in the Authorization header. Get token from Admin login.
       requestBody:
         required: true
         content:
@@ -67,8 +66,8 @@ paths:
           schema:
             type: string
           required: true
-          description: String id of info object to update
-      description: Update info
+          description: String id of info object to update, requires bearer token send in the Authorization header. Get token from Admin login.
+      description: Update one info item
       requestBody:
         required: true
         content:
@@ -96,8 +95,8 @@ paths:
           schema:
             type: string
           required: true
-          description: String id of info object to be deleted
-      description: Delete info
+          description: String id of info object to be deleted, requires bearer token send in the Authorization header. Get token from Admin login.
+      description: Delete one info item
       responses:
         '200':
           $ref: '#/components/responses/Success'
@@ -108,7 +107,7 @@ paths:
     get:
       tags:
         - Info
-      description: Get all the welcomMessage items in info
+      description: Get all the welcomeMessage items in info collection.
       responses:
         '200':
           description: OK
@@ -120,7 +119,7 @@ paths:
     get:
       tags:
         - Info
-      description: Get all the unit items in info
+      description: Get all the unit items in info collection
       responses:
         '200':
           description: 'OK'
@@ -132,7 +131,7 @@ paths:
     get:
       tags:
         - Info
-      description: Get all the instructions items in info
+      description: Get all the instructions items in info collection
       responses:
         '200':
           description: 'OK'
@@ -144,7 +143,7 @@ paths:
     get:
       tags:
         - Users
-      description: Get all users of fazer work safety games
+      description: Get all users of users collection
       responses:
         '200':
           description: 'OK'
@@ -188,8 +187,6 @@ paths:
     put:
       tags:
         - Users
-      security:
-        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -197,7 +194,7 @@ paths:
             type: string
           required: true
           description: String id of user
-      description: Update user
+      description: Update one user
       requestBody:
         required: true
         content:
@@ -212,8 +209,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
     delete:
       tags:
         - Users
@@ -225,7 +220,7 @@ paths:
           schema:
             type: string
           required: true
-          description: String id of user to be deleted
+          description: String id of user to be deleted, requires bearer token send in the Authorization header. Get token from Admin login.
       description: Delete one user
       responses:
         '200':
@@ -257,7 +252,7 @@ paths:
         - Admin
       security:
         - bearerAuth: []
-      description: Get all admin users
+      description: Get all admin users of admins collection, requires bearer token send in the Authorization header. Get token from Admin login.
       responses:
         '200':
           description: 'OK'
@@ -272,7 +267,7 @@ paths:
         - Admin
       security:
         - bearerAuth: []
-      description: Post new admin user
+      description: Post new admin user, requires bearer token send in the Authorization header. Get token from Admin login.
       requestBody:
         required: true
         content:
@@ -298,7 +293,7 @@ paths:
           description: String id of admin user
       security:
         - bearerAuth: []
-      description: Get all admin users
+      description: Get all admin users, requires bearer token send in the Authorization header. Get token from Admin login.
       responses:
         '200':
           description: 'OK'
@@ -327,6 +322,7 @@ paths:
             schema:
               type: object
               $ref: '#/components/schemas/AdminPost'
+      description: Update admin users information, requires bearer token send in the Authorization header. Get token from Admin login.
       responses:
         '200':
           description: OK
@@ -348,17 +344,37 @@ paths:
             type: string
           required: true
           description: String id of admin to be deleted
-      description: Delete one admin user
+      description: Delete one admin user, requires bearer token send in the Authorization header. Get token from Admin login.
       responses:
         '200':
           $ref: '#/components/responses/Success'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+  /api/v1/game/admin/{id}/change-password:
+    put:
+      tags:
+        - Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: String id of admin user
+      description: Change admin users password, requires bearer token send in the Authorization header. Get token from Admin login.
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
   /api/v1/game/categories:
     get:
       tags:
         - Categories
-      description: Get all categories
+      description: Get all categories of categories collection
       responses:
         '200':
           description: 'OK'
@@ -371,7 +387,7 @@ paths:
         - Categories
       security:
         - bearerAuth: []
-      description: Post new category
+      description: Post new category, requires bearer token send in the Authorization header. Get token from Admin login.
       requestBody:
         required: true
         content:
@@ -406,7 +422,7 @@ paths:
     put:
       tags:
         - Categories
-      description: Update one category
+      description: Update one category, requires bearer token send in the Authorization header. Get token from Admin login.
       parameters:
         - in: path
           name: id
@@ -444,7 +460,7 @@ paths:
             type: string
           required: true
           description: String category id
-      description: Delete one category
+      description: Delete one category, requires bearer token send in the Authorization header. Get token from Admin login.
       responses:
         '200':
           $ref: '#/components/responses/Success'
@@ -498,7 +514,7 @@ paths:
     get:
       tags:
         - Questions
-      description: Get all questions
+      description: Get all questions from questions collection
       responses:
         '200':
           description: 'OK'
@@ -511,7 +527,7 @@ paths:
         - Questions
       security:
         - bearerAuth: []
-      description: Post new question
+      description: Post new question, requires bearer token send in the Authorization header. Get token from Admin login.
       requestBody:
         required: true
         content:
@@ -546,7 +562,7 @@ paths:
     put:
       tags:
         - Questions
-      description: Update one question
+      description: Update one question, requires bearer token send in the Authorization header. Get token from Admin login.
       parameters:
         - in: path
           name: id
@@ -584,12 +600,53 @@ paths:
             type: string
           required: true
           description: String question id
-      description: Delete one question
+      description: Delete one question, requires bearer token send in the Authorization header. Get token from Admin login.
       responses:
         '200':
           $ref: '#/components/responses/Success'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+  /api/v1/game/login:
+    post:
+      tags:
+        - Login
+      security:
+        - bearerAuth: []
+      description: Login route for admin users, returns admin users information and created token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 'John Doe'
+                password:
+                  type: string
+                  example: 'YourPassword'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiVGV'
+                  name:
+                    type: string
+                    example: 'John Doe'
+                  unit:
+                    $ref: '#/components/schemas/Units'
+                  id:
+                    type: string
+                    example: '5df0ed35d0296e3c64525a87'
+        '403':
+          $ref: '#/components/responses/Forbidden'
 
 components:
   securitySchemes:
@@ -602,17 +659,11 @@ components:
       description: Model containing Info
       type: object
       properties:
-        id:
-          type: string
-          example: '5dc2bfb288f4b411f851aa7e'
         welcomeMessage:
           type: array
           items:
             type: object
             properties:
-              _id:
-                type: string
-                example: '5dcc0634fc004f3360c7824f'
               title:
                 type: string
                 example: 'Tervetuloa töihin Fazerille!'
@@ -624,9 +675,6 @@ components:
           items:
             type: object
             properties:
-              _id:
-                type: string
-                example: 'fb60d487-8696-4bfe-8623-2a78304d8437'
               name:
                 type: string
                 example: 'Lahti'
@@ -635,9 +683,6 @@ components:
           items:
             type: object
             properties:
-              _id:
-                type: string
-                example: '5dc2bfb288f4b411f851aa80'
               title:
                 type: string
                 example: 'Ohjeet'
@@ -696,9 +741,6 @@ components:
       description: Users of Fazer work safety game
       type: object
       properties:
-        id:
-          type: string
-          example: 5dc3e4c51940c732945100cd
         name:
           type: string
           example: 'John Doe'
@@ -725,9 +767,6 @@ components:
               items:
                 type: object
                 properties:
-                  _id:
-                    type: string
-                    example: '5dc3e4c51940c732945100ce'
                   categoryId:
                     type: string
                     example: '01ed880f-9477-4453-a0fd-80803f5709a2'
@@ -744,9 +783,6 @@ components:
       description: Admin users of Fazer safety game
       type: object
       properties:
-        id:
-          type: string
-          example: '5dcbe65825825d3830854216'
         name:
           type: string
           example: 'Testinen'
@@ -769,9 +805,6 @@ components:
       description: Admin users of Fazer safety game
       type: object
       properties:
-        id:
-          type: string
-          example: '5dcbe65825825d3830854216'
         name:
           type: string
           example: 'Testinen'
@@ -799,9 +832,6 @@ components:
       description: Category
       type: object
       properties:
-        id:
-          type: string
-          example: 'cffc7f45-9df7-45c5-a509-473e4b979044'
         name:
           type: string
           example: 'Ennakoiva turvallisuus'
@@ -810,9 +840,6 @@ components:
           items:
             type: object
             properties:
-              _id:
-                type: string
-                example: '5dbae2a02c923a1cc49048c3'
               title:
                 type: string
                 example: 'Riskien ja vaarojen arviointi sekä turvallisen työn aloitus'
